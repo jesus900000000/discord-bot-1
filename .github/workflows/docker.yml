@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build Push Deploy
 
 on:
   push:
@@ -7,9 +7,6 @@ on:
 permissions:
   contents: read
   packages: write
-
-env:
-  IMAGE_NAME: ghcr.io/jesus900000000/discord-bot-1
 
 jobs:
   build-and-push:
@@ -34,3 +31,13 @@ jobs:
           tags: |
             ghcr.io/jesus900000000/discord-bot-1:latest
             ghcr.io/jesus900000000/discord-bot-1:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+
+    steps:
+      - name: Restart deployment
+        run: |
+          kubectl rollout restart deployment discord-bot-1 -n apps
+          kubectl rollout status deployment discord-bot-1 -n apps
