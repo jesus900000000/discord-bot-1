@@ -18,3 +18,4 @@ while True:
     payload = {
         'content': str(int(time.time() * 1000))
     }
+    print('running...')
